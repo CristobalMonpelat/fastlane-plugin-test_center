@@ -9,3 +9,26 @@ lane :run_examples do
     # rubocop:enable Security/Eval
   end
 end
+
+lane :coverage do
+  UI.important(
+    'example: ' \
+    'multi_scan also can also run just the tests passed in the ' \
+    ':only_testing option.'
+  )
+  multi_scan(
+    workspace: File.absolute_path('../AtomicBoy/AtomicBoy.xcworkspace'),
+    scheme: 'AtomicBoy',
+    try_count: 3,
+    code_coverage: true,
+    only_testing: ['AtomicBoyTests'],
+    fail_build: false
+  )
+  slather(
+    cobertura_xml: true,
+    output_directory: "test_output",
+    proj: File.absolute_path('../AtomicBoy/AtomicBoy.xcodeproj'),
+    workspace: File.absolute_path('../AtomicBoy/AtomicBoy.xcworkspace'),
+    scheme: "AtomicBoy"
+  )
+end
